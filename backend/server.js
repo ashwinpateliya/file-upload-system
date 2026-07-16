@@ -9,6 +9,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static("public"));
+
 // Create uploads folder if it does not exist
 if (!fs.existsSync("uploads")) {
     fs.mkdirSync("uploads");
@@ -83,11 +85,28 @@ app.get("/files", (req, res) => {
 
         if (err) {
             return res.status(500).json({
-                message: "Unable to fetch files",
+                message: "Unable to fetch files"
             });
         }
 
-        res.json(files);
+        const fileData = files.map(file => {
+
+            const stats = fs.statSync(
+                path.join("./uploads", file)
+            );
+
+            return {
+                name: file,
+                size: (
+                    stats.size / 1024
+                ).toFixed(2) + " KB",
+
+                uploaded:
+                    stats.birthtime.toLocaleString()
+            };
+        });
+
+        res.json(fileData);
     });
 });
 
@@ -116,6 +135,7 @@ app.delete("/delete/:filename", (req, res) => {
 
 });
 
+
 // Open Uploaded Files
 app.use(
     "/uploads",
@@ -128,6 +148,29 @@ app.use(
 app.use((error, req, res, next) => {
     res.status(500).json({
         message: error.message,
+    });
+});
+app.delete("/reset", (req, res) => {
+
+    const folder = path.join(__dirname, "uploads");
+
+    fs.readdir(folder, (err, files) => {
+
+        if (err) {
+            return res.status(500).json({
+                message: "Unable to reset files"
+            });
+        }
+
+        files.forEach((file) => {
+            fs.unlinkSync(
+                path.join(folder, file)
+            );
+        });
+
+        res.json({
+            message: "All Files Deleted Successfully"
+        });
     });
 });
 
