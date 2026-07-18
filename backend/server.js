@@ -11,12 +11,12 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-// Create uploads folder if it does not exist
+// Create uploads folder
 if (!fs.existsSync("uploads")) {
     fs.mkdirSync("uploads");
 }
 
-// Multer Storage Configuration
+// Multer Storage 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "uploads/");
@@ -53,7 +53,7 @@ const upload = multer({
     },
 });
 
-// Home Route
+// Home
 app.get("/", (req, res) => {
     res.send("Backend Server Running");
 });

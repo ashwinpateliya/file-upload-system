@@ -12,7 +12,8 @@ import {
     FaFilePdf,
     FaFileExcel,
     FaFileImage,
-    FaFileCsv
+    FaFileCsv,
+    FaFolder
 } from "react-icons/fa";
 
 function FileUploader() {
@@ -176,7 +177,7 @@ function FileUploader() {
         )
             return <FaFileImage color="orange" />;
 
-        return "📁";
+        return <FaFolder color="gold" />;
     };
 
     return (
@@ -387,7 +388,7 @@ function FileUploader() {
                             fileDetails && (
                                 <div className="details-box">
 
-                                    <h2>📄 File Details</h2>
+                                    <h2 class="Detail"> File Details</h2>
 
                                     <p><b>File Name:</b> {fileDetails.name}</p>
 
